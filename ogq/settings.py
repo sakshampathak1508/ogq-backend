@@ -98,7 +98,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ogqbackend$ogq-db',
         'USER': 'ogqbackend',
-        'PASSWORD': '12345678',
+        'PASSWORD': 'ogq@2024',
         'HOST': 'ogqbackend.mysql.pythonanywhere-services.com',
     }
 }
