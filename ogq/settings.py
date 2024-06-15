@@ -96,10 +96,10 @@ WSGI_APPLICATION = 'ogq.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ogqbackend',
+        'NAME': 'ogqbackend$default',
         'USER': 'ogqbackend',
         'PASSWORD': '12345678',
-        'HOST': 'localhost',
+        'HOST': 'ogqbackend.mysql.pythonanywhere-services.com',
         'PORT': '3306',
     }
 }
