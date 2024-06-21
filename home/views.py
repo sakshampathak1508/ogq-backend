@@ -1,7 +1,13 @@
+import json
+import requests
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.core.mail import send_mail
+from rest_framework.permissions import AllowAny
+from django.conf import settings
+from django.http import JsonResponse
 from .serializers import *
 from .models import *
 
@@ -113,7 +119,7 @@ class SelectionView(APIView):
 class TestimonialView(APIView):
     def get(self, request):
         try:
-            data = Testimonials.objects.all()[0]
+            data = Testimonials.objects.all().order_by('-id')
             serializer = TestimonialsSerializer(data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -231,5 +237,108 @@ class SportsNavbarView(APIView):
                 'junior' : junior
             }
             return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class InitiatePaymentAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        data = json.loads(request.body)
+        name = data['name']
+        amount = data['amount']
+        email = data['email']
+        pan_number = data['pan']
+        phone_number = data['phone_number']
+
+        key_id = 'rzp_live_OputbbGc4fa7vn'
+        key_secret = 'BXSsqMrYkZV76Yp0MqTkgGO8'
+
+        url = "https://api.razorpay.com/v1/orders"
+        headers = {
+            "Content-Type": "application/json",
+        }
+        auth = (key_id, key_secret)
+        payload = {
+            'amount': int(amount) * 100,
+            'currency': 'INR',
+            'receipt': "3456",
+            'payment_capture': 1
+        }
+        response = requests.post(url, headers=headers, auth=auth, json=payload)
+
+        return_data = response.json()
+        return JsonResponse(return_data)
+
+
+class EmailAPIView(APIView):
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        data = json.loads(request.body)
+        name = data.get('name', '')
+        email = data.get('email', '')
+        address = data.get('address', '')
+        pan = data.get('pan', '')
+        phone = data.get('phone', '')
+        amount = data.get('amount', '')
+        duration = data.get('duration', '')
+        tenure = data.get('tenure', '')
+        
+        EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+        EMAIL_HOST = 'smtp.example.com'
+        EMAIL_PORT = 587
+        EMAIL_USE_TLS = True
+        EMAIL_HOST_USER = 'ogqbanking@gmail.com'
+        if not name or not email or not address or not pan or not phone or not amount or not duration or not tenure:
+            return Response({'error': 'Missing required fields'}, status=400)
+
+        subject = f'New message on Donation (Recurring) from {name}'
+        message = f'''
+            Name: {name}
+            Email: {email}
+            Address: {address}
+            PAN: {pan}
+            Phone: {phone}
+            Amount: {amount}
+            Duration: {duration}
+            Tenure: {tenure}
+        '''
+        try:
+            send_mail(
+                subject,
+                message,
+                EMAIL_HOST_USER,
+                [EMAIL_HOST_USER],
+                fail_silently=False,
+            )
+            return Response({'message': 'Form submitted successfully and email sent'})
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
+
+class CountdownView(APIView):
+    def get(self, request):
+        try:
+            data = Countdown.objects.all().order_by('-id')[0]
+            serializer = CountdownSerializer(data, Many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class MedalStatsView(APIView):
+    def get(self, request):
+        try:
+            data = MedalStats.objects.all()[0]
+            serializer = MedalStatsSerializer(data, Many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class AthleteStatsView(APIView):
+    def get(self, request):
+        try:
+            data = AthleteStats.objects.all()[0]
+            serializer = AthleteStatsSerializer(data, Many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

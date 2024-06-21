@@ -92,3 +92,18 @@ class HomePageCarouselSerializer(serializers.ModelSerializer):
     class Meta:
         model = HomePageCarousel
         fields = '__all__'
+
+class MedalStatsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MedalStats
+        fields = '__all__'
+
+class AthleteStatsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AthleteStats
+        fields = '__all__'
+
+class CountdownSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Countdown
+        fields = '__all__'

@@ -192,6 +192,7 @@ class TeamOgqIndia(models.Model):
     sporting_achivements = models.CharField(max_length=200,blank=True,null=True)
     qualification = models.CharField(max_length=200,blank=True,null=True)
     linkedin = models.URLField(blank=True, null=True)
+    about_them = models.TextField(blank=True)
 
     class Meta:
         verbose_name = "Team OGQ India"
@@ -208,6 +209,7 @@ class TeamOgqUs(models.Model):
     sporting_achivements = models.CharField(max_length=200,blank=True,null=True)
     qualification = models.CharField(max_length=200,blank=True,null=True)
     linkedin = models.URLField(blank=True, null=True)
+    about_them = models.TextField(blank=True)
     
     class Meta:
         verbose_name = "Team OGQ US"
@@ -230,7 +232,7 @@ class OgqImpact(models.Model):
 
 
 class HomePageCarousel(models.Model):
-    name = models.CharField(max_length=200,default="")
+    title = models.CharField(max_length=200,default="")
     image = models.ImageField(upload_to='image',blank=True,null=True)
 
     class Meta:
@@ -238,4 +240,50 @@ class HomePageCarousel(models.Model):
         verbose_name_plural = "Home Page Carousel"
 
     def __str__(self):
-        return self.name
+        return self.title
+
+class MedalStats(models.Model):
+    olympics = models.CharField(max_length=20,default="")
+    world_championships = models.CharField(max_length=20,default="")
+    asian_games = models.CharField(max_length=20,default="")
+    asian_games = models.CharField(max_length=20,default="")
+    commonwealth_games = models.CharField(max_length=20,default="")
+    youth_olympics = models.CharField(max_length=20,default="")
+    junior_world_championships = models.CharField(max_length=20,default="")
+    paralympics = models.CharField(max_length=20,default="")
+
+    class Meta:
+        verbose_name = "Medal Stats"
+        verbose_name_plural = "Medal Stats"
+
+    def __str__(self):
+        return "Medal Stats"
+
+class AthleteStats(models.Model):
+
+    total_athletes = models.CharField(max_length=20,default="")
+    senior_athletes = models.CharField(max_length=20,default="")
+    junior_athletes = models.CharField(max_length=20,default="")
+    para_athletes = models.CharField(max_length=20,default="")
+    
+    class Meta:
+        verbose_name = "Athlete Stats"
+        verbose_name_plural = "Athlete Stats"
+
+    def __str__(self):
+        return "Athlete Stats"
+
+class Countdown(models.Model):
+
+    text = models.CharField(max_length=20,default="")
+    content = models.TextField(blank=True)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+
+
+    class Meta:
+        verbose_name = "Countdown"
+        verbose_name_plural = "Countdown"
+
+    def __str__(self):
+        return "Athlete Stats"

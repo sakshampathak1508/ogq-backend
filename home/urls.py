@@ -21,4 +21,9 @@ urlpatterns = [
     path('announcement', AnnounceMentView.as_view()),
     path('home_carousel', CarouselView.as_view()),
     path('sports_in_navbar', SportsNavbarView.as_view()),
+    path('countdown', CountdownView.as_view()),
+    path('medal_stats', MedalStatsView.as_view()),
+    path('athlete_stats', AthleteStatsView.as_view()),
+    path('payment', InitiatePaymentAPIView.as_view()),
+    path('email', EmailAPIView.as_view()),
 ]
