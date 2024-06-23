@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -55,11 +56,15 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
-
+CORS_ALLOW_CREDENTIALS = True
 # CORS_ORIGIN_ALLOW_ALL = False
-# CORS_ORIGIN_WHITELIST = (
-#        'http://localhost:4200',
-# )
+CORS_ORIGIN_WHITELIST = (
+       'http://localhost:4200',
+       'http://localhost:3000',
+       'http://localhost:8000',
+       'https://main--tiny-alfajores-1f834e.netlify.app'
+
+)
 
 ROOT_URLCONF = 'ogq.urls'
 
