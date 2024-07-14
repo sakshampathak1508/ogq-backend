@@ -18,7 +18,7 @@ class HistorySerializer(serializers.ModelSerializer):
 
 class SelectionProcessSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SelectionProcess 
+        model = SelectionProcess
         fields = '__all__'
 
 class AreasOfSupportSerializer(serializers.ModelSerializer):
@@ -32,7 +32,7 @@ class PerformanceReportFilesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class AnnualReturnFilesSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = AnnualReturnFiles
         fields = '__all__'
@@ -77,7 +77,7 @@ class OgqImpactSerializer(serializers.ModelSerializer):
     class Meta:
         model = OgqImpact
         fields = '__all__'
-    
+
 class TeamOgqIndiaSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeamOgqIndia
@@ -106,4 +106,19 @@ class AthleteStatsSerializer(serializers.ModelSerializer):
 class CountdownSerializer(serializers.ModelSerializer):
     class Meta:
         model = Countdown
+        fields = '__all__'
+
+class SportsOptionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SportsOptions
+        fields = '__all__'
+
+class TeamPositionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeamPositions
+        fields = '__all__'
+
+class OlympicNamesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OlympicNames
         fields = '__all__'

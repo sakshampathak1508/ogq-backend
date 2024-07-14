@@ -2,14 +2,17 @@ from django.db import models
 from django.utils import timezone
 
 class Testimonials(models.Model):
-    content = models.TextField(blank=True)
+    name = models.CharField(max_length=200,default="")
+    caption = models.CharField(max_length=200,default="")
+    image = models.ImageField(upload_to='image',blank=True,null=True)
+    extra_info = models.TextField(blank=True)
 
     class Meta:
         verbose_name = "Testimonial"
         verbose_name_plural = "Testimonial"
 
     def __str__(self):
-        return "About Us"
+        return f"Testimonial of {self.name}"
 
 class VisionAndMission(models.Model):
     content = models.TextField(blank=True)
@@ -134,17 +137,21 @@ JUNIOR_SPORTS = (
 )
 
 class Olympic(models.Model):
-    sport = models.CharField(choices=OLYMPICS_SPORTS,max_length=100,blank=True,null=True)
+    sport = models.CharField(max_length=100,blank=True,null=True)
     name = models.CharField(max_length=200,default="")
     event = models.CharField(max_length=200,default="")
     image = models.ImageField(upload_to='image',blank=True,null=True)
 
     def __str__(self):
         return self.name
+
+    def __init__(self, *args, **kwargs):
+        super(Olympic, self).__init__(*args, **kwargs)
+        self._meta.get_field('sport').choices = [(pos.text, pos.text) for pos in SportsOptions.objects.filter(event_type='olympics')]
 
 
 class Paralympic(models.Model):
-    sport = models.CharField(choices=PARALYMPICS_SPORTS,max_length=100,blank=True,null=True)
+    sport = models.CharField(max_length=100,blank=True,null=True)
     name = models.CharField(max_length=200,default="")
     event = models.CharField(max_length=200,default="")
     image = models.ImageField(upload_to='image',blank=True,null=True)
@@ -152,8 +159,12 @@ class Paralympic(models.Model):
     def __str__(self):
         return self.name
 
+    def __init__(self, *args, **kwargs):
+        super(Paralympic, self).__init__(*args, **kwargs)
+        self._meta.get_field('sport').choices = [(pos.text, pos.text) for pos in SportsOptions.objects.filter(event_type='paralympics')]
+
 class JuniorAthletes(models.Model):
-    sport = models.CharField(choices=JUNIOR_SPORTS,max_length=100,blank=True,null=True)
+    sport = models.CharField(max_length=100,blank=True,null=True)
     name = models.CharField(max_length=200,default="")
     event = models.CharField(max_length=200,default="")
     image = models.ImageField(upload_to='image',blank=True,null=True)
@@ -165,13 +176,18 @@ class JuniorAthletes(models.Model):
     def __str__(self):
         return self.name
 
+    def __init__(self, *args, **kwargs):
+        super(JuniorAthletes, self).__init__(*args, **kwargs)
+        self._meta.get_field('sport').choices = [(pos.text, pos.text) for pos in SportsOptions.objects.filter(event_type='junior')]
+
 RESULT_TEXT = (
+    ('paris 2024','paris 2024'),
     ('rio 2016','rio 2016'),
     ('london 2012','london 2012'),
 )
 
 class OlympicResultPlayers(models.Model):
-    olympic_year = models.CharField(choices=RESULT_TEXT,max_length=100,blank=True,null=True)
+    olympic_year = models.CharField(max_length=100,blank=True,null=True)
     name = models.CharField(max_length=200,default="")
     caption = models.CharField(max_length=200,default="")
     image = models.ImageField(upload_to='image',blank=True,null=True)
@@ -183,16 +199,30 @@ class OlympicResultPlayers(models.Model):
     def __str__(self):
         return self.name
 
+    def __init__(self, *args, **kwargs):
+        super(OlympicResultPlayers, self).__init__(*args, **kwargs)
+        self._meta.get_field('olympic_year').choices = [(pos.text, pos.text) for pos in OlympicNames.objects.all()]
+
+GROUPS = (
+    ('board of directors','board of directors'),
+    ('executive committee','executive committee'),
+    ('management','management'),
+    ('sports science','sports science'),
+    ('ogq ambasdors','ogq ambassadors'),
+    ('chapter heads','chapter heads'),
+)
 
 class TeamOgqIndia(models.Model):
     name = models.CharField(max_length=100,blank=True,null=True)
     image = models.ImageField(upload_to='image',blank=True,null=True)
+    group = models.CharField(max_length=100,blank=True,null=True)
     joining_date = models.DateField(auto_now=True, blank=True, null=True)
     designation = models.CharField(max_length=200,blank=True,null=True)
     sporting_achivements = models.CharField(max_length=200,blank=True,null=True)
     qualification = models.CharField(max_length=200,blank=True,null=True)
     linkedin = models.URLField(blank=True, null=True)
     about_them = models.TextField(blank=True)
+    rank = models.BigIntegerField(default=1)
 
     class Meta:
         verbose_name = "Team OGQ India"
@@ -200,6 +230,10 @@ class TeamOgqIndia(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    def __init__(self, *args, **kwargs):
+        super(TeamOgqIndia, self).__init__(*args, **kwargs)
+        self._meta.get_field('group').choices = [(pos.text, pos.text) for pos in TeamPositions.objects.all()]
 
 class TeamOgqUs(models.Model):
     name = models.CharField(max_length=100,blank=True,null=True)
@@ -210,7 +244,7 @@ class TeamOgqUs(models.Model):
     qualification = models.CharField(max_length=200,blank=True,null=True)
     linkedin = models.URLField(blank=True, null=True)
     about_them = models.TextField(blank=True)
-    
+
     class Meta:
         verbose_name = "Team OGQ US"
         verbose_name_plural = "Team OGQ US"
@@ -222,6 +256,7 @@ class OgqImpact(models.Model):
     name = models.CharField(max_length=200,default="")
     image = models.ImageField(upload_to='image',blank=True,null=True)
     caption = models.CharField(max_length=200,default="")
+    about_them = models.TextField(blank=True)
 
     class Meta:
         verbose_name = "Olympic Impact Players"
@@ -265,7 +300,7 @@ class AthleteStats(models.Model):
     senior_athletes = models.CharField(max_length=20,default="")
     junior_athletes = models.CharField(max_length=20,default="")
     para_athletes = models.CharField(max_length=20,default="")
-    
+
     class Meta:
         verbose_name = "Athlete Stats"
         verbose_name_plural = "Athlete Stats"
@@ -276,7 +311,7 @@ class AthleteStats(models.Model):
 class Countdown(models.Model):
 
     text = models.CharField(max_length=20,default="")
-    content = models.TextField(blank=True)
+    extra_info = models.TextField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
 
@@ -286,4 +321,39 @@ class Countdown(models.Model):
         verbose_name_plural = "Countdown"
 
     def __str__(self):
-        return "Athlete Stats"
+        return self.text
+
+SPORTS = (
+    ('olympics','olympics'),
+    ('paralympics','paralympics'),
+    ('junior','junior')
+)
+class SportsOptions(models.Model):
+    text = models.CharField(max_length=100,default="")
+    event_type = models.CharField(choices=SPORTS,max_length=100,default="")
+    class Meta:
+        verbose_name = "Sport options"
+        verbose_name_plural = "Sport options"
+
+    def __str__(self):
+        return f"{self.text} added in category {self.event_type}"
+
+class TeamPositions(models.Model):
+    text = models.CharField(max_length=100,default="")
+
+    class Meta:
+        verbose_name = "Team Position options"
+        verbose_name_plural = "Team Position options"
+
+    def __str__(self):
+        return self.text
+
+class OlympicNames(models.Model):
+    text = models.CharField(max_length=100,default="")
+
+    class Meta:
+        verbose_name = "Add olympics"
+        verbose_name_plural = "Add olympics"
+
+    def __str__(self):
+        return self.text
