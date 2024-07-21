@@ -24,6 +24,6 @@ urlpatterns = [
     path('countdown', CountdownView.as_view()),
     path('medal_stats', MedalStatsView.as_view()),
     path('athlete_stats', AthleteStatsView.as_view()),
-    path('email', EmailAPIView.as_view()),
     path('dropdown', DropdownView.as_view()),
+    path('email', EmailAPIView.as_view()),
 ]

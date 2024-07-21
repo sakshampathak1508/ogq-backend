@@ -10,7 +10,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from .serializers import *
 from .models import *
-
+from django.utils import timezone
 
 class VissionView(APIView):
     def get(self, request):
@@ -120,7 +120,7 @@ class SelectionView(APIView):
 class TestimonialView(APIView):
     def get(self, request):
         try:
-            data = Testimonials.objects.all()
+            data = Testimonials.objects.all().order_by('id')
             serializer = TestimonialsSerializer(data, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -159,8 +159,8 @@ class JuniorView(APIView):
 
 class DropdownView(APIView):
     def get(self, request):
-        olympic_data_obj = OlympicNames.objects.all().order_by('text')
-        team_data_obj = TeamPositions.objects.all().order_by('text')
+        olympic_data_obj = OlympicNames.objects.all()
+        team_data_obj = TeamPositions.objects.all()
 
         olympic_data = []
         team_data = []
@@ -250,6 +250,35 @@ class SportsNavbarView(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class CountdownView(APIView):
+    def get(self, request):
+        try:
+            current_date = timezone.now().date()
+            data = Countdown.objects.filter(end_date__gt=current_date).order_by('start_date')
+            serializer = CountdownSerializer(data,many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class MedalStatsView(APIView):
+    def get(self, request):
+        try:
+            data = MedalStats.objects.all()[0]
+            serializer = MedalStatsSerializer(data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class AthleteStatsView(APIView):
+    def get(self, request):
+        try:
+            data = AthleteStats.objects.all()[0]
+            serializer = AthleteStatsSerializer(data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class EmailAPIView(APIView):
     permission_classes = [AllowAny]
 
@@ -265,10 +294,11 @@ class EmailAPIView(APIView):
         tenure = data.get('tenure', '')
 
         EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-        EMAIL_HOST = 'smtp.example.com'
+        EMAIL_HOST = 'smtp.gmail.com'
         EMAIL_PORT = 587
         EMAIL_USE_TLS = True
         EMAIL_HOST_USER = 'sakshamvpathak@gmail.com'
+        EMAIL_HOST_PASSWORD='cheenu@1508
         if not name or not email or not address or not pan or not phone or not amount or not duration or not tenure:
             return Response({'error': 'Missing required fields'}, status=400)
 
@@ -294,30 +324,3 @@ class EmailAPIView(APIView):
             return Response({'message': 'Form submitted successfully and email sent'})
         except Exception as e:
             return Response({'error': str(e)}, status=500)
-
-class CountdownView(APIView):
-    def get(self, request):
-        try:
-            data = Countdown.objects.all()[0]
-            serializer = CountdownSerializer(data)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-class MedalStatsView(APIView):
-    def get(self, request):
-        try:
-            data = MedalStats.objects.all()[0]
-            serializer = MedalStatsSerializer(data)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-class AthleteStatsView(APIView):
-    def get(self, request):
-        try:
-            data = AthleteStats.objects.all()[0]
-            serializer = AthleteStatsSerializer(data)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

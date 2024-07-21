@@ -310,8 +310,7 @@ class AthleteStats(models.Model):
 
 class Countdown(models.Model):
 
-    text = models.CharField(max_length=20,default="")
-    extra_info = models.TextField(blank=True)
+    text = models.CharField(max_length=256,default="")
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
 
