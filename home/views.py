@@ -44,7 +44,7 @@ class TeamOgqIndiaView(APIView):
 class TeamOgqUsView(APIView):
     def get(self, request, *args, **kwargs):
         try:
-            data = TeamOgqUs.objects.all()
+            data = TeamOgqUs.objects.all().order_by('rank')
             serializer = TeamOgqUsSerializer(data,many= True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -72,7 +72,7 @@ class AreasOfSupportView(APIView):
 class OgqImpactView(APIView):
     def get(self, request):
         try:
-            data = OgqImpact.objects.all()
+            data = OgqImpact.objects.all().order_by('rank')
             serializer = OgqImpactSerializer(data,many= True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -120,7 +120,7 @@ class SelectionView(APIView):
 class TestimonialView(APIView):
     def get(self, request):
         try:
-            data = Testimonials.objects.all().order_by('id')
+            data = Testimonials.objects.all().order_by('rank')
             serializer = TestimonialsSerializer(data, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -131,7 +131,7 @@ class OlympicsView(APIView):
     def get(self, request):
         try:
             sport = request.GET.get('sport', '')
-            data = Olympic.objects.filter(sport=sport).order_by('name')
+            data = Olympic.objects.filter(sport=sport).order_by('rank')
             serializer = OlympicSerializer(data, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -141,7 +141,7 @@ class ParalympicView(APIView):
     def get(self, request):
         try:
             sport = request.GET.get('sport', '').lower()
-            data = Paralympic.objects.filter(sport=sport).order_by('name')
+            data = Paralympic.objects.filter(sport=sport).order_by('rank')
             serializer = ParalympicSerializer(data, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -151,7 +151,7 @@ class JuniorView(APIView):
     def get(self, request):
         try:
             sport = request.GET.get('sport', '').lower()
-            data = JuniorAthletes.objects.filter(sport=sport).order_by('name')
+            data = JuniorAthletes.objects.filter(sport=sport).order_by('rank')
             serializer = JuniorAthletesSerializer(data, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -181,8 +181,18 @@ class OlympicResultView(APIView):
     def get(self, request):
         try:
             year = request.GET.get('year', '').lower()
-            data = OlympicResultPlayers.objects.filter(olympic_year=year)
+            data = OlympicResultPlayers.objects.filter(olympic_year=year).order_by('rank')
             serializer = OlympicResultPlayersSerializer(data, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ParalympicsResultView(APIView):
+    def get(self, request):
+        try:
+            year = request.GET.get('year', '').lower()
+            data = ParalympicResultPlayers.objects.filter(olympic_year=year).order_by('rank')
+            serializer = ParalympicResultPlayersSerializer(data, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

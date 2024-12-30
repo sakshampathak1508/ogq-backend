@@ -6,6 +6,7 @@ class Testimonials(models.Model):
     caption = models.CharField(max_length=200,default="")
     image = models.ImageField(upload_to='image',blank=True,null=True)
     extra_info = models.TextField(blank=True)
+    rank = models.BigIntegerField(default=1)
 
     class Meta:
         verbose_name = "Testimonial"
@@ -141,6 +142,7 @@ class Olympic(models.Model):
     name = models.CharField(max_length=200,default="")
     event = models.CharField(max_length=200,default="")
     image = models.ImageField(upload_to='image',blank=True,null=True)
+    rank = models.BigIntegerField(default=1)
 
     def __str__(self):
         return self.name
@@ -155,6 +157,7 @@ class Paralympic(models.Model):
     name = models.CharField(max_length=200,default="")
     event = models.CharField(max_length=200,default="")
     image = models.ImageField(upload_to='image',blank=True,null=True)
+    rank = models.BigIntegerField(default=1)
 
     def __str__(self):
         return self.name
@@ -168,6 +171,7 @@ class JuniorAthletes(models.Model):
     name = models.CharField(max_length=200,default="")
     event = models.CharField(max_length=200,default="")
     image = models.ImageField(upload_to='image',blank=True,null=True)
+    rank = models.BigIntegerField(default=1)
 
     class Meta:
         verbose_name = "Junior Scholoarship athletes"
@@ -191,6 +195,7 @@ class OlympicResultPlayers(models.Model):
     name = models.CharField(max_length=200,default="")
     caption = models.CharField(max_length=200,default="")
     image = models.ImageField(upload_to='image',blank=True,null=True)
+    rank = models.BigIntegerField(default=1)
 
     class Meta:
         verbose_name = "Olympic Results Players"
@@ -201,6 +206,24 @@ class OlympicResultPlayers(models.Model):
 
     def __init__(self, *args, **kwargs):
         super(OlympicResultPlayers, self).__init__(*args, **kwargs)
+        self._meta.get_field('olympic_year').choices = [(pos.text, pos.text) for pos in OlympicNames.objects.all()]
+
+class ParalympicResultPlayers(models.Model):
+    olympic_year = models.CharField(max_length=100,blank=True,null=True)
+    name = models.CharField(max_length=200,default="")
+    caption = models.CharField(max_length=200,default="")
+    image = models.ImageField(upload_to='image',blank=True,null=True)
+    rank = models.BigIntegerField(default=1)
+
+    class Meta:
+        verbose_name = "Paralympic Results Players"
+        verbose_name_plural = "Paralympic Results Players"
+
+    def __str__(self):
+        return self.name
+
+    def __init__(self, *args, **kwargs):
+        super(ParalympicResultPlayers, self).__init__(*args, **kwargs)
         self._meta.get_field('olympic_year').choices = [(pos.text, pos.text) for pos in OlympicNames.objects.all()]
 
 GROUPS = (
@@ -244,6 +267,7 @@ class TeamOgqUs(models.Model):
     qualification = models.CharField(max_length=200,blank=True,null=True)
     linkedin = models.URLField(blank=True, null=True)
     about_them = models.TextField(blank=True)
+    rank = models.BigIntegerField(default=1)
 
     class Meta:
         verbose_name = "Team OGQ US"
@@ -257,6 +281,7 @@ class OgqImpact(models.Model):
     image = models.ImageField(upload_to='image',blank=True,null=True)
     caption = models.CharField(max_length=200,default="")
     about_them = models.TextField(blank=True)
+    rank = models.BigIntegerField(default=1)
 
     class Meta:
         verbose_name = "Olympic Impact Players"
@@ -286,6 +311,7 @@ class MedalStats(models.Model):
     youth_olympics = models.CharField(max_length=20,default="")
     junior_world_championships = models.CharField(max_length=20,default="")
     paralympics = models.CharField(max_length=20,default="")
+
 
     class Meta:
         verbose_name = "Medal Stats"

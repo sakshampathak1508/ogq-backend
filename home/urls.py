@@ -18,6 +18,7 @@ urlpatterns = [
     path('paralympics', ParalympicView.as_view()),
     path('junior', JuniorView.as_view()),
     path('olympics_result', OlympicResultView.as_view()),
+    path('paralympics_result', ParalympicsResultView.as_view()),
     path('announcement', AnnounceMentView.as_view()),
     path('home_carousel', CarouselView.as_view()),
     path('sports_in_navbar', SportsNavbarView.as_view()),

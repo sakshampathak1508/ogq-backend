@@ -73,6 +73,11 @@ class OlympicResultPlayersSerializer(serializers.ModelSerializer):
         model = OlympicResultPlayers
         fields = '__all__'
 
+class ParalympicResultPlayersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ParalympicResultPlayers
+        fields = '__all__'
+
 class OgqImpactSerializer(serializers.ModelSerializer):
     class Meta:
         model = OgqImpact
